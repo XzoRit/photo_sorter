@@ -3,15 +3,20 @@ import piexif
 
 import unittest
 
+def bytes_to_str(bytes):
+    return "".join(map(chr, bytes))
+
 def extract_exif_data(exif_dict):
     return exif_dict["Exif"]
+
+def extract_creation_date(exif_data):
+    date_time_original_str = bytes_to_str(exif_data[36867])
+    return time.strptime(date_time_original_str, "%Y:%m:%d %H:%M:%S")
 
 def creation_date_from_photo(file_name):
     exif_dict = piexif.load(file_name)
     exif_data = extract_exif_data(exif_dict)
-    date_time_original = exif_data[36867]
-    date_time_original_str = "".join(map(chr,date_time_original))
-    return time.strptime(date_time_original_str, "%Y:%m:%d %H:%M:%S")
+    return extract_creation_date(exif_data)
 
 class TestPhotoSorter(unittest.TestCase):
 
