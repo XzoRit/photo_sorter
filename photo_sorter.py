@@ -1,10 +1,23 @@
 import time
 import piexif
 
-exif_dict = piexif.load("photo.jpg")
-exif_data = exif_dict["Exif"]
-date_time_original = exif_data[36867]
-date_time_original_str = "".join(map(chr,date_time_original))
-struct_time = time.strptime(date_time_original_str, "%Y:%m:%d %H:%M:%S")
+import unittest
 
-print(struct_time)
+def extract_exif_data(exif_dict):
+    return exif_dict["Exif"]
+
+def creation_date_from_photo(file_name):
+    exif_dict = piexif.load(file_name)
+    exif_data = extract_exif_data(exif_dict)
+    date_time_original = exif_data[36867]
+    date_time_original_str = "".join(map(chr,date_time_original))
+    return time.strptime(date_time_original_str, "%Y:%m:%d %H:%M:%S")
+
+class TestPhotoSorter(unittest.TestCase):
+
+    def test_photo_creation_date(self):
+        creation_date = creation_date_from_photo("photo.jpg")
+        self.assertEqual(creation_date.tm_year, 2015)
+
+if __name__ == '__main__':
+    unittest.main()
