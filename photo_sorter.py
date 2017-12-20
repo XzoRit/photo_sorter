@@ -18,6 +18,11 @@ class TestPhotoSorter(unittest.TestCase):
     def test_photo_creation_date(self):
         creation_date = creation_date_from_photo("photo.jpg")
         self.assertEqual(creation_date.tm_year, 2015)
+        self.assertEqual(creation_date.tm_mon, 1)
+        self.assertEqual(creation_date.tm_mday, 1)
+        self.assertEqual(creation_date.tm_hour, 10)
+        self.assertEqual(creation_date.tm_min, 8)
+        self.assertEqual(creation_date.tm_sec, 1)
 
 if __name__ == '__main__':
     unittest.main()
