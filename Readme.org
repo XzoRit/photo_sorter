@@ -1,0 +1,3 @@
+* photo_sorter
+
+[[https://travis-ci.org/XzoRit/photo_sorter][file:https://travis-ci.org/XzoRit/photo_sorter.svg?branch=master]]
