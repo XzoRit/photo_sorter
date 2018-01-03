@@ -27,8 +27,8 @@ def file_name_from_photo_creation_date(photo_file):
 class TestPhotoSorter(unittest.TestCase):
 
     def test_photo_creation_date(self):
-        photo_file_name = file_name_from_photo_creation_date("photo.jpg")
-        self.assertEqual(photo_file_name, "2015_01_01_10_08_01")
+        photo_file_name = file_name_from_photo_creation_date("test/photo.jpg")
+        self.assertEqual(photo_file_name, "2015_03_01_14_08_43")
 
 if __name__ == '__main__':
     unittest.main()
