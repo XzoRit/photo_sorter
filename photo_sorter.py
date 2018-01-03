@@ -18,16 +18,17 @@ def creation_date_from_photo(file_name):
     exif_data = extract_exif_data(exif_dict)
     return extract_creation_date(exif_data)
 
+def file_name_from_time(t):
+    return time.strftime("%Y_%m_%d_%H_%M_%S", t)
+
+def file_name_from_photo_creation_date(photo_file):
+    return file_name_from_time(creation_date_from_photo(photo_file));
+
 class TestPhotoSorter(unittest.TestCase):
 
     def test_photo_creation_date(self):
-        creation_date = creation_date_from_photo("photo.jpg")
-        self.assertEqual(creation_date.tm_year, 2015)
-        self.assertEqual(creation_date.tm_mon, 1)
-        self.assertEqual(creation_date.tm_mday, 1)
-        self.assertEqual(creation_date.tm_hour, 10)
-        self.assertEqual(creation_date.tm_min, 8)
-        self.assertEqual(creation_date.tm_sec, 1)
+        photo_file_name = file_name_from_photo_creation_date("photo.jpg")
+        self.assertEqual(photo_file_name, "2015_01_01_10_08_01")
 
 if __name__ == '__main__':
     unittest.main()
