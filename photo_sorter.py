@@ -21,19 +21,20 @@ def creation_date_from_photo(file_name):
     return extract_creation_date(exif_data)
 
 def path_str_from_time(t):
-    return time.strftime("%Y/%m/%Y_%m_%d_%H_%M_%S", t)
+    return Path(time.strftime("%Y/%m/%Y_%m_%d_%H_%M_%S", t))
 
 def path_from_photo_creation_date(photo_file):
-    return Path(
-        path_str_from_time(
-            creation_date_from_photo(str(photo_file)))
-        + photo_file.suffix)
+    return path_str_from_time(
+        creation_date_from_photo(str(photo_file))).with_suffix(photo_file.suffix)
+
+def src_dest_path_from_photo_creation_date(photo_file):
+    return {photo_file: path_from_photo_creation_date(photo_file)}
 
 class TestPhotoSorter(unittest.TestCase):
 
-    def test_path_from_photo_creation_date(self):
-        file_path = path_from_photo_creation_date(Path("test/photo.jpg"))
-        self.assertEqual(file_path, Path("2015/03/2015_03_01_14_08_43.jpg"))
+    def test_src_to_dest_paths(self):
+        src_dest = src_dest_path_from_photo_creation_date(Path("test/photo.jpg"))
+        self.assertEqual(src_dest, {Path("test/photo.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg")})
 
 if __name__ == '__main__':
     unittest.main()
