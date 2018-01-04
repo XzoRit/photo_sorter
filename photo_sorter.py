@@ -1,3 +1,4 @@
+import os
 import piexif
 import time
 
@@ -30,11 +31,35 @@ def path_from_photo_creation_date(photo_file):
 def src_dest_path_from_photo_creation_date(photo_file):
     return {photo_file: path_from_photo_creation_date(photo_file)}
 
+def iterate_over_photo_files(folder):
+    src_dest_map = dict()
+    for fn in os.listdir(folder):
+        try:
+            file_path = os.path.join(folder, fn)
+            if os.path.isfile(file_path):
+                src_dest_map.update(src_dest_path_from_photo_creation_date(Path(file_path)))
+        except:
+            pass
+    return src_dest_map
+
 class TestPhotoSorter(unittest.TestCase):
 
     def test_src_to_dest_paths(self):
-        src_dest = src_dest_path_from_photo_creation_date(Path("test/photo.jpg"))
-        self.assertEqual(src_dest, {Path("test/photo.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg")})
+        src_dest = src_dest_path_from_photo_creation_date(Path("test/photo_0.jpg"))
+        self.assertEqual(src_dest, {Path("test/photo_0.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg")})
 
-if __name__ == '__main__':
+    def test_iterate_over_photo_files(self):
+        folder = "test"
+        expected = {
+            Path("test/photo_0.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
+            Path("test/photo_1.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
+            Path("test/photo_2.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
+            Path("test/photo_3.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
+            Path("test/photo_4.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
+            Path("test/photo_5.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg")
+        }
+        actual = iterate_over_photo_files(folder)
+        self.assertDictEqual(actual, expected)
+
+if __name__ == "__main__":
     unittest.main()
