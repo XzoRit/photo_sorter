@@ -44,10 +44,6 @@ def iterate_over_photo_files(folder):
 
 class TestPhotoSorter(unittest.TestCase):
 
-    def test_src_to_dest_paths(self):
-        src_dest = src_dest_path_from_photo_creation_date(Path("test/photo_0.jpg"))
-        self.assertEqual(src_dest, {Path("test/photo_0.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg")})
-
     def test_iterate_over_photo_files(self):
         folder = "test"
         expected = {
