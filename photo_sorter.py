@@ -1,7 +1,9 @@
-import time
 import piexif
+import time
 
 import unittest
+
+from pathlib import Path
 
 def bytes_to_str(bytes):
     return "".join(map(chr, bytes))
@@ -18,17 +20,17 @@ def creation_date_from_photo(file_name):
     exif_data = extract_exif_data(exif_dict)
     return extract_creation_date(exif_data)
 
-def file_name_from_time(t):
+def str_from_time(t):
     return time.strftime("%Y_%m_%d_%H_%M_%S", t)
 
 def file_name_from_photo_creation_date(photo_file):
-    return file_name_from_time(creation_date_from_photo(photo_file));
+    return str_from_time(creation_date_from_photo(str(photo_file))) + photo_file.suffix
 
 class TestPhotoSorter(unittest.TestCase):
 
     def test_photo_creation_date(self):
-        photo_file_name = file_name_from_photo_creation_date("test/photo.jpg")
-        self.assertEqual(photo_file_name, "2015_03_01_14_08_43")
+        photo_file_name = file_name_from_photo_creation_date(Path("test/photo.jpg"))
+        self.assertEqual(photo_file_name, "2015_03_01_14_08_43.jpg")
 
 if __name__ == '__main__':
     unittest.main()
