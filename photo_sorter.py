@@ -31,6 +31,28 @@ def path_from_photo_creation_date(photo_file):
 def src_dest_path_from_photo_creation_date(photo_file):
     return {photo_file: path_from_photo_creation_date(photo_file)}
 
+def make_reversed_multidict(a_dict):
+    reversed_multidict = dict()
+    for key, value in a_dict.items():
+        reversed_multidict.setdefault(value, list()).append(key)
+    return reversed_multidict
+
+def make_dest_paths_unique(src_to_dest_paths):
+    reversed_multidict = make_reversed_multidict(src_to_dest_paths)
+
+    c = [values for key, values in reversed_multidict.items() if len(values) > 1]
+
+    for d in c:
+        counter = int(0)
+        for e in d:
+            p = src_to_dest_paths[e]
+            q = p.stem + "_" + "{:02}".format(counter) + p.suffix
+            q = os.path.join(p.parent, q)
+            src_to_dest_paths[e] = Path(q)
+            counter += 1
+
+    return src_to_dest_paths
+
 def iterate_over_photo_files(folder):
     src_dest_map = dict()
     for fn in os.listdir(folder):
@@ -40,19 +62,18 @@ def iterate_over_photo_files(folder):
                 src_dest_map.update(src_dest_path_from_photo_creation_date(Path(file_path)))
         except:
             pass
-    return src_dest_map
+    return make_dest_paths_unique(src_dest_map)
 
 class TestPhotoSorter(unittest.TestCase):
 
     def test_iterate_over_photo_files(self):
         folder = "test"
-        expected = {
-            Path("test/photo_0.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
-            Path("test/photo_1.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
-            Path("test/photo_2.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
-            Path("test/photo_3.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
-            Path("test/photo_4.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg"),
-            Path("test/photo_5.jpg"): Path("2015/03/2015_03_01_14_08_43.jpg")
+        expected = {  Path("test/photo_0.jpg"): Path("2015/03/2015_03_01_14_08_43_00.jpg")
+                    , Path("test/photo_1.jpg"): Path("2015/03/2015_03_01_14_08_43_01.jpg")
+                    , Path("test/photo_2.jpg"): Path("2015/03/2015_03_01_14_08_43_02.jpg")
+                    , Path("test/photo_3.jpg"): Path("2015/03/2015_03_01_14_08_43_03.jpg")
+                    , Path("test/photo_4.jpg"): Path("2015/03/2015_03_01_14_08_43_04.jpg")
+                    , Path("test/photo_5.jpg"): Path("2015/03/2015_03_01_14_08_43_05.jpg")
         }
         actual = iterate_over_photo_files(folder)
         self.assertDictEqual(actual, expected)
