@@ -7,5 +7,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python photo_sorter.py
-
+  - python -m unittest discover

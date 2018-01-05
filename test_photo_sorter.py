@@ -76,16 +76,13 @@ def iterate_over_photo_files(folder):
 class TestPhotoSorter(unittest.TestCase):
 
     def test_iterate_over_photo_files(self):
-        folder = "test"
-        expected = {  Path("test/photo_0.jpg"): Path("test/2015/03/2015_03_01_14_08_43_00.jpg")
-                    , Path("test/photo_1.jpg"): Path("test/2015/03/2015_03_01_14_08_43_01.jpg")
-                    , Path("test/photo_2.jpg"): Path("test/2015/03/2015_03_01_14_08_43_02.jpg")
-                    , Path("test/photo_3.jpg"): Path("test/2015/03/2015_03_01_14_08_43_03.jpg")
-                    , Path("test/photo_4.jpg"): Path("test/2015/03/2015_03_01_14_08_43_04.jpg")
-                    , Path("test/photo_5.jpg"): Path("test/2015/03/2015_03_01_14_08_43_05.jpg")
+        folder = "photo_sorter/test"
+        expected = {  Path("photo_sorter/test/photo_0.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_00.jpg")
+                    , Path("photo_sorter/test/photo_1.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_01.jpg")
+                    , Path("photo_sorter/test/photo_2.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_02.jpg")
+                    , Path("photo_sorter/test/photo_3.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_03.jpg")
+                    , Path("photo_sorter/test/photo_4.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_04.jpg")
+                    , Path("photo_sorter/test/photo_5.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_05.jpg")
         }
         actual = iterate_over_photo_files(folder)
         self.assertDictEqual(actual, expected)
-
-if __name__ == "__main__":
-    unittest.main()
