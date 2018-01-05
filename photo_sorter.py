@@ -42,6 +42,12 @@ def append_counter_to_path(path, counter):
     new_file_name = path.stem + "_" + "{:02}".format(counter) + path.suffix
     return Path(os.path.join(path.parent, new_file_name))
 
+def make_unique_paths_into(src_paths, src_to_dest_paths):
+        counter = int(0)
+        for src_path in src_paths:
+            src_to_dest_paths[src_path] = append_counter_to_path(src_to_dest_paths[src_path], counter)
+            counter += 1
+
 def make_dest_paths_unique(src_to_dest_paths):
     dest_paths_to_list_of_src_paths = make_reversed_multidict(src_to_dest_paths)
 
@@ -52,10 +58,7 @@ def make_dest_paths_unique(src_to_dest_paths):
     ]
 
     for src_paths in list_of_src_paths_with_same_dest_paths:
-        counter = int(0)
-        for src_path in src_paths:
-            src_to_dest_paths[src_path] = append_counter_to_path(src_to_dest_paths[src_path], counter)
-            counter += 1
+        make_unique_paths_into(src_paths, src_to_dest_paths)
 
     return src_to_dest_paths
 
