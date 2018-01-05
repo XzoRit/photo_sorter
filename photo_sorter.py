@@ -39,7 +39,7 @@ def make_reversed_multidict(a_dict):
     return reversed_multidict
 
 def append_counter_to_path(path, counter):
-    new_file_name = path.stem + "_" + "{:02}".format(counter) + path.suffix
+    new_file_name = path.stem + "_" + "{:03}".format(counter) + path.suffix
     return Path(os.path.join(path.parent, new_file_name))
 
 def make_unique_paths_into(src_paths, src_to_dest_paths):
@@ -77,5 +77,9 @@ args = parser.parse_args()
 photo_folder = vars(args)['photo_folder']
 
 for src, dest in iterate_over_photo_files(photo_folder).items():
-    dest.parent.mkdir(parents = True, exist_ok = True)
-    shutil.move(src, dest)
+    try:
+        dest.parent.mkdir(parents = True, exist_ok = True)
+        shutil.move(src, dest)
+    except:
+        pass
+
