@@ -37,18 +37,23 @@ def make_reversed_multidict(a_dict):
         reversed_multidict.setdefault(value, list()).append(key)
     return reversed_multidict
 
+def append_counter_to_path(path, counter):
+    new_file_name = path.stem + "_" + "{:02}".format(counter) + path.suffix
+    return Path(os.path.join(path.parent, new_file_name))
+
 def make_dest_paths_unique(src_to_dest_paths):
-    reversed_multidict = make_reversed_multidict(src_to_dest_paths)
+    dest_paths_to_list_of_src_paths = make_reversed_multidict(src_to_dest_paths)
 
-    c = [values for key, values in reversed_multidict.items() if len(values) > 1]
+    list_of_src_paths_with_same_dest_paths = [
+        list_of_src_paths
+        for _, list_of_src_paths in dest_paths_to_list_of_src_paths.items()
+        if len(list_of_src_paths) > 1
+    ]
 
-    for d in c:
+    for src_paths in list_of_src_paths_with_same_dest_paths:
         counter = int(0)
-        for e in d:
-            p = src_to_dest_paths[e]
-            q = p.stem + "_" + "{:02}".format(counter) + p.suffix
-            q = os.path.join(p.parent, q)
-            src_to_dest_paths[e] = Path(q)
+        for src_path in src_paths:
+            src_to_dest_paths[src_path] = append_counter_to_path(src_to_dest_paths[src_path], counter)
             counter += 1
 
     return src_to_dest_paths
