@@ -7,4 +7,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python photo_sorter -h
+  - python photo_sorter.py -h
