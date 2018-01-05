@@ -1,8 +1,8 @@
+import argparse
 import os
 import piexif
+import shutil
 import time
-
-import unittest
 
 from pathlib import Path
 
@@ -50,16 +50,9 @@ def make_unique_paths_into(src_paths, src_to_dest_paths):
 
 def make_dest_paths_unique(src_to_dest_paths):
     dest_paths_to_list_of_src_paths = make_reversed_multidict(src_to_dest_paths)
-
-    list_of_src_paths_with_same_dest_paths = [
-        list_of_src_paths
-        for _, list_of_src_paths in dest_paths_to_list_of_src_paths.items()
-        if len(list_of_src_paths) > 1
-    ]
-
+    list_of_src_paths_with_same_dest_paths = dest_paths_to_list_of_src_paths.values()
     for src_paths in list_of_src_paths_with_same_dest_paths:
         make_unique_paths_into(src_paths, src_to_dest_paths)
-
     return src_to_dest_paths
 
 def iterate_over_photo_files(folder):
@@ -73,16 +66,16 @@ def iterate_over_photo_files(folder):
             pass
     return make_dest_paths_unique(src_dest_map)
 
-class TestPhotoSorter(unittest.TestCase):
 
-    def test_iterate_over_photo_files(self):
-        folder = "photo_sorter/test"
-        expected = {  Path("photo_sorter/test/photo_0.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_00.jpg")
-                    , Path("photo_sorter/test/photo_1.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_01.jpg")
-                    , Path("photo_sorter/test/photo_2.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_02.jpg")
-                    , Path("photo_sorter/test/photo_3.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_03.jpg")
-                    , Path("photo_sorter/test/photo_4.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_04.jpg")
-                    , Path("photo_sorter/test/photo_5.jpg"): Path("photo_sorter/test/2015/03/2015_03_01_14_08_43_05.jpg")
-        }
-        actual = iterate_over_photo_files(folder)
-        self.assertDictEqual(actual, expected)
+parser = argparse.ArgumentParser(description='renames photo files by creation date')
+parser.add_argument('--photo_folder'
+                    , required = True
+                    , type = Path
+                    , help = 'folder containing photos to be renamed')
+
+args = parser.parse_args()
+photo_folder = vars(args)['photo_folder']
+
+for src, dest in iterate_over_photo_files(photo_folder).items():
+    dest.parent.mkdir(parents = True, exist_ok = True)
+    shutil.move(src, dest)
