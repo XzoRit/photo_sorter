@@ -24,13 +24,13 @@ def creation_date_from_photo(file_name):
 def path_str_from_date(t):
     return Path(time.strftime("%Y/%m/%Y_%m_%d_%H_%M_%S", t))
 
-def path_from_photo_creation_date(photo_file):
+def path_from_photo_creation_date(photo_file, dest_folder):
     creation_date = creation_date_from_photo(str(photo_file))
     path_with_creation_date = path_str_from_date(creation_date).with_suffix(photo_file.suffix)
-    return Path(os.path.join(photo_file.parent, path_with_creation_date))
+    return Path(os.path.join(dest_folder, path_with_creation_date))
 
-def src_dest_path_from_photo_creation_date(photo_file):
-    return {photo_file: path_from_photo_creation_date(photo_file)}
+def src_dest_path_from_photo_creation_date(photo_file, dest_folder):
+    return {photo_file: path_from_photo_creation_date(photo_file, dest_folder)}
 
 def make_reversed_multidict(a_dict):
     reversed_multidict = dict()
@@ -55,15 +55,15 @@ def make_dest_paths_unique(src_to_dest_paths):
         make_unique_paths_into(src_paths, src_to_dest_paths)
     return src_to_dest_paths
 
-def iterate_over_photo_files(folder):
+def iterate_over_photo_files(folder, dest_folder):
     src_dest_map = dict()
     for fn in os.listdir(folder):
         try:
             file_path = os.path.join(folder, fn)
             if os.path.isfile(file_path):
-                src_dest_map.update(src_dest_path_from_photo_creation_date(Path(file_path)))
-        except:
-            pass
+                src_dest_map.update(src_dest_path_from_photo_creation_date(Path(file_path), dest_folder))
+        except Exception as e:
+            print(e)
     return make_dest_paths_unique(src_dest_map)
 
 
@@ -72,14 +72,19 @@ parser.add_argument('--photo_folder'
                     , required = True
                     , type = Path
                     , help = 'folder containing photos to be renamed')
+parser.add_argument('--destination_folder'
+                    , required = True
+                    , type = Path
+                    , help = 'folder where renamed photos shall moved into')
 
 args = parser.parse_args()
 photo_folder = vars(args)['photo_folder']
+dest_folder = vars(args)['destination_folder']
 
-for src, dest in iterate_over_photo_files(photo_folder).items():
+for src, dest in iterate_over_photo_files(photo_folder, dest_folder).items():
     try:
         dest.parent.mkdir(parents = True, exist_ok = True)
         shutil.move(src, dest)
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
