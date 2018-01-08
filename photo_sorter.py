@@ -1,7 +1,5 @@
-import argparse
 import os
 import piexif
-import shutil
 import time
 
 from pathlib import Path
@@ -65,26 +63,3 @@ def iterate_over_photo_files(folder, dest_folder):
         except Exception as e:
             print(e)
     return make_dest_paths_unique(src_dest_map)
-
-
-parser = argparse.ArgumentParser(description='renames photo files by creation date')
-parser.add_argument('--photo_folder'
-                    , required = True
-                    , type = Path
-                    , help = 'folder containing photos to be renamed')
-parser.add_argument('--destination_folder'
-                    , required = True
-                    , type = Path
-                    , help = 'folder where renamed photos shall moved into')
-
-args = parser.parse_args()
-photo_folder = vars(args)['photo_folder']
-dest_folder = vars(args)['destination_folder']
-
-for src, dest in iterate_over_photo_files(photo_folder, dest_folder).items():
-    try:
-        dest.parent.mkdir(parents = True, exist_ok = True)
-        shutil.move(src, dest)
-    except Exception as e:
-        print(e)
-
