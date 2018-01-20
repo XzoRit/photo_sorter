@@ -36,7 +36,7 @@ try:
     for src, dest in iterate_over_photo_files(photo_folder, dest_folder).items():
         try:
             dest.parent.mkdir(parents = True, exist_ok = True)
-            shutil.copy2(src, dest)
+            shutil.move(src, dest)
         except Exception as e:
             print(e)
 except Exception as e:
