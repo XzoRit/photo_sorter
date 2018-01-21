@@ -4,6 +4,7 @@ import time
 
 from pathlib import Path
 
+
 class PhotoSorter:
     def __init__(self, photo_folder, dest_folder):
         self._photo_folder = photo_folder
@@ -29,11 +30,15 @@ class PhotoSorter:
 
     def path_from_photo_creation_date(self, photo_file, dest_folder):
         creation_date = self.creation_date_from_photo(str(photo_file))
-        path_with_creation_date = self.path_str_from_date(creation_date).with_suffix(photo_file.suffix)
+        path_with_creation_date = self.path_str_from_date(
+            creation_date).with_suffix(photo_file.suffix)
         return Path(os.path.join(dest_folder, path_with_creation_date))
 
     def src_dest_path_from_photo_creation_date(self, photo_file, dest_folder):
-        return {photo_file: self.path_from_photo_creation_date(photo_file, dest_folder)}
+        return {
+            photo_file: self.path_from_photo_creation_date(
+                photo_file, dest_folder)
+        }
 
     def make_reversed_multidict(self, a_dict):
         reversed_multidict = dict()
@@ -46,14 +51,16 @@ class PhotoSorter:
         return Path(os.path.join(path.parent, new_file_name))
 
     def make_unique_paths_into(self, src_paths, src_to_dest_paths):
-            counter = int(0)
-            for src_path in src_paths:
-                src_to_dest_paths[src_path] = self.append_counter_to_path(src_to_dest_paths[src_path], counter)
-                counter += 1
+        counter = int(0)
+        for src_path in src_paths:
+            src_to_dest_paths[src_path] = self.append_counter_to_path(
+                src_to_dest_paths[src_path], counter)
+            counter += 1
 
     def make_dest_paths_unique(self, src_to_dest_paths):
-        dest_paths_to_list_of_src_paths = self.make_reversed_multidict(src_to_dest_paths)
-        list_of_src_paths_with_same_dest_paths = dest_paths_to_list_of_src_paths.values()
-        for src_paths in list_of_src_paths_with_same_dest_paths:
+        dest_paths_to_list_of_src_paths = self.make_reversed_multidict(
+            src_to_dest_paths)
+        src_with_same_dest = dest_paths_to_list_of_src_paths.values()
+        for src_paths in src_with_same_dest:
             self.make_unique_paths_into(src_paths, src_to_dest_paths)
         return src_to_dest_paths
