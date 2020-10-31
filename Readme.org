@@ -1,3 +1,14 @@
 * photo_sorter
 
 [[https://travis-ci.org/XzoRit/photo_sorter][file:https://travis-ci.org/XzoRit/photo_sorter.svg?branch=master]]
+
+usage: script.py [-h] --photo_folder PHOTO_FOLDER --destination_folder DESTINATION_FOLDER
+
+renames photo files by creation date
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --photo_folder PHOTO_FOLDER
+                        folder containing photos to be renamed
+  --destination_folder DESTINATION_FOLDER
+                        folder where renamed photos shall moved into
